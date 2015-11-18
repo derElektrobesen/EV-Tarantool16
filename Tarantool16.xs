@@ -150,7 +150,7 @@ static void on_request_timer(EV_P_ ev_timer *t, int flags) {
 	if ((ctx->wbuf = pkt)) {\
 		__EXEC_REQUEST(self, ctxsv, ctx, iid, _cb);\
 		INIT_TIMEOUT_TIMER(self, ctx, iid, opts);\
-		cwarn("sending packet...");\
+		/*cwarn("sending packet...");*/\
 	}\
 } STMT_END
 
