@@ -80,7 +80,7 @@ sub memcheck ($$$$) {
 	my $cnt = 0;
 	my $start = time;
 	my $do;$do = sub {
-		#warn "[$cnt/$n] call $method(@$args): @_";
+		warn "[$cnt/$n] call $method(@$args): @_";
 		# diag Dumper \@_;
 		return EV::unloop if ++$cnt >= $n;
 		$obj->$method(@$args,$do);
@@ -99,7 +99,7 @@ sub memcheck ($$$$) {
 diag '==== Memory tests ====';
 
 subtest 'connect/disconnect test', sub {
-	# plan( skip_all => 'skip');
+	plan( skip_all => 'skip');
 	
 	for (0..5) {
 		my $cnt = 0;
@@ -158,6 +158,7 @@ subtest 'basic memory test', sub {
 		reconnect => 0.2,
 		log_level => 1,
 		cnntrace => $tnt->{cnntrace},
+		timeout => 0,
 		connected => sub {
 			EV::unloop;
 		},
@@ -176,13 +177,13 @@ subtest 'basic memory test', sub {
 	EV::loop;
 
 
-	memcheck 50000, $c, "ping",[];
-	memcheck 50000, $c, "eval",["return {'hey'}", []];
-	memcheck 50000, $c, "call",["string_function",[]];
-	memcheck 50000, $c, "select",[$SPACE_NAME,{ _t1 => 't1' }];
-	memcheck 50000, $c, "replace",[$SPACE_NAME,['t1', 't2', 12, 100 ], { hash => 1}];
-	memcheck 50000, $c, "update",[$SPACE_NAME,{_t1 => 't1',_t2 => 't2',_t3 => 17}, [ [3 => '+', 1] ], { hash => 1 }];
-	memcheck 50000, $c, "eval",["return {box.info}", [], { timeout => 0.00001 }];
+	memcheck 500000, $c, "ping",[];
+	# memcheck 50000, $c, "eval",["return {'hey'}", []];
+	# memcheck 50000, $c, "call",["string_function",[]];
+	# memcheck 50000, $c, "select",[$SPACE_NAME,{ _t1 => 't1' }];
+	# memcheck 50000, $c, "replace",[$SPACE_NAME,['t1', 't2', 12, 100 ], { hash => 1}];
+	# memcheck 50000, $c, "update",[$SPACE_NAME,{_t1 => 't1',_t2 => 't2',_t3 => 17}, [ [3 => '+', 1] ], { hash => 1 }];
+	# memcheck 50000, $c, "eval",["return {box.info}", [], { timeout => 0.00001 }];
 };
 
 done_testing;

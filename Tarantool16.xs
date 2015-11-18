@@ -6,6 +6,7 @@
 
 #include "EVAPI.h"
 #define XSEV_CON_HOOKS 1
+#include "xsmy.h"
 #include "xsevcnn.h"
 
 #define MYDEBUG
@@ -119,6 +120,7 @@ static void on_request_timer(EV_P_ ev_timer *t, int flags) {
 
 #define TIMEOUT_TIMER(self, ctx, iid, timeout) STMT_START {\
 	if (timeout > 0) {\
+		cwarn("Starting timer with timeout = %f", timeout);\
 		ev_timer_init(&ctx->t, on_request_timer, timeout, 0.);\
 		ev_timer_start(self->cnn.loop, &ctx->t);\
 	}\
@@ -148,6 +150,7 @@ static void on_request_timer(EV_P_ ev_timer *t, int flags) {
 	if ((ctx->wbuf = pkt)) {\
 		__EXEC_REQUEST(self, ctxsv, ctx, iid, _cb);\
 		INIT_TIMEOUT_TIMER(self, ctx, iid, opts);\
+		cwarn("sending packet...");\
 	}\
 } STMT_END
 
